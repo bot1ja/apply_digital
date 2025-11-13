@@ -2,18 +2,24 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
     reporter: [
-        ['list'],                 // muestra resultados en consola
-        ['html', { open: 'never' }] // genera reporte HTML (no lo abre automáticamente)
+        ['list'],
+        ['html', { open: 'never' }]
     ],
     testDir: './tests',
     use: {
-         baseURL: 'https://automationexercise.com/',
-        headless: false,   // 👈 esto lo hace visual siempre
+        baseURL: 'https://automationexercise.com/',
+        headless: false, 
         trace: 'on-first-retry',
     },
     projects: [
-        { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-        // { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-        // { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+        {
+            name: 'Chromium',
+            use: { ...devices['Desktop Chrome'] },
+        },
+        {
+            name: 'Mobile Safari',
+            use: { ...devices['iPhone 13'] },
+        },
+
     ],
 });

@@ -58,16 +58,33 @@ automation_test/
    npx playwright install
    ```
 
+4. **Optional: Update package.json scripts** (recommended)
+   ```json
+   {
+     "scripts": {
+       "test": "playwright test",
+       "test:headed": "playwright test --headed",
+       "test:ui": "playwright test --ui",
+       "test:debug": "playwright test --debug",
+       "report": "playwright show-report"
+     }
+   }
+   ```
+
 ## ▶️ Running Tests
 
 ### Execute the test suite
 ```bash
 npx playwright test
+# OR if you've added the scripts to package.json:
+npm test
 ```
 
 ### Run tests in headed mode (visible browser)
 ```bash
 npx playwright test --headed
+# OR with npm script:
+npm run test:headed
 ```
 
 ### Run specific test file
@@ -75,9 +92,25 @@ npx playwright test --headed
 npx playwright test web_automation_challenge.spec.ts
 ```
 
+### Run tests with UI mode (interactive)
+```bash
+npx playwright test --ui
+# OR with npm script:
+npm run test:ui
+```
+
+### Run tests in debug mode
+```bash
+npx playwright test --debug
+# OR with npm script:
+npm run test:debug
+```
+
 ### Generate and view HTML report
 ```bash
 npx playwright show-report
+# OR with npm script:
+npm run report
 ```
 
 ## ⚙️ Configuration
@@ -86,15 +119,18 @@ The test configuration is managed in `playwright.config.ts`:
 
 - **Base URL**: `https://automationexercise.com/`
 - **Browser**: Chromium (Chrome)
-- **Mode**: Non-headless (visual execution)
+- **Mode**: Non-headless (visual execution) - tests run with visible browser by default
 - **Reports**: Console list + HTML report
 - **Tracing**: Enabled on first retry
 
 ### Key Configuration Options
 
-- `headless: false` - Runs tests in visible browser mode
-- `trace: 'on-first-retry'` - Captures trace on test failures
-- `baseURL` - Target application URL
+- `headless: false` - Tests run with visible browser by default (no need for --headed flag)
+- `trace: 'on-first-retry'` - Captures trace on test failures for debugging
+- `baseURL` - Target application URL (automationexercise.com)
+- `testDir: './tests'` - Location of test files
+
+> **Note**: Since `headless: false` is set in the config, tests will run with a visible browser by default. Use `--headed` flag only if you want to override a headless configuration.
 
 ## 📊 Test Reports
 
@@ -143,27 +179,53 @@ After test execution, reports are available in:
 
 Update `playwright.config.ts` to enable additional browsers:
 
+```markdown
+### Browser Projects (as defined in playwright.config.ts)
+
+The project is configured to run with Chromium by default (headless: false). If you want multi-browser testing, enable the commented projects and adjust headless for CI.
+
 ```typescript
 projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+    {
+        name: 'Chromium',
+        use: { ...devices['Desktop Chrome'] },
+    },
+    {
+        name: 'Mobile Safari',
+        use: { ...devices['iPhone 13'] },
+    },
 ],
+```
+
+Notes:
+- For CI, set `headless: true` or override via CLI.
+- Use `--headed` to force a visible browser when needed.
 ```
 
 ## 🐛 Debugging
 
 ### View Test Execution
-- Tests run in headed mode by default (`headless: false`)
+- Tests run with visible browser by default (`headless: false` in config)
 - Use browser developer tools during execution
+- Use `--ui` flag for interactive test development and debugging
 
 ### Analyze Failures
-- Check HTML report for detailed failure information
-- Review screenshots and videos in `test-results/`
+- Check HTML report for detailed failure information:
+  ```bash
+  npx playwright show-report
+  ```
+- Review screenshots and videos in `test-results/` directory
 - Use trace viewer for step-by-step debugging:
   ```bash
   npx playwright show-trace test-results/[trace-file].zip
   ```
+
+### Debug Mode
+- Run tests in debug mode for step-by-step execution:
+  ```bash
+  npx playwright test --debug
+  ```
+- Use Playwright Inspector for live debugging
 
 ## 📝 Notes
 
